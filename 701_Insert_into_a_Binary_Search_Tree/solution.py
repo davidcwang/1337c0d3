@@ -35,6 +35,15 @@ class Solution(object):
                     return root
                 currentNode = currentNode.right
 
+    def insertIntoBSTRecur(self, root, val):
+        if not root:
+            root = TreeNode(val)
+        if val < root.val:
+            root.left = self.insertIntoBST(root.left, val)
+        elif val > root.val:
+            root.right = self.insertIntoBST(root.right, val)
+        return root
+
     def printTree(self, node):
         if node == None:
             return
@@ -42,10 +51,6 @@ class Solution(object):
         print('Node: {} Val: {} Right: {}, Left: {}'.format(
                 node, node.val, node.left, node.right))
         self.printTree(node.right)
-
-#        4
-#    2      7
-#1     3   5
 
 if __name__ == '__main__':
     s = Solution()
