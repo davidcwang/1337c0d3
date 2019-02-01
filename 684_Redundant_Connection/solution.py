@@ -8,8 +8,10 @@ Date: 01/18/2019
 import sys
 
 class Solution(object):
-    self.rank = [0] * 1000
-    self.root= range(1000) 
+    def __init__(self):
+        N = 1001
+        self.rank = [0] * N
+        self.root = [x for x in range(N)]
 
     def findRedundantConnection(self, edges):
         """
@@ -19,21 +21,30 @@ class Solution(object):
         redun = None
         for e in edges:
             src, dest = e
-            srcr = find(src)
-            destr = find(dest)
+            srcr = self.find(src)
+            destr = self.find(dest)
 
-            if rank[srcr] > rank[destr]:
+            # If an edge that has not been added yet and the two numbers that
+            # are being added point to the same root, this means that we have
+            # created a cycle.
+            if self.root[src] == self.root[dest]:
+                redun = [src, dest]
+
+            if self.rank[srcr] > self.rank[destr]:
                 self.root[destr] = srcr
-                self.root = map(lambda i: self.root[i] = destr, srcrpar)
-            elif rank[srcr] < rank[destr]:
-                self.root[srcr] = destr 
-                self.root = map(lambda i: self.root[i] = srcr, destr)
+            elif self.rank[srcr] < self.rank[destr]:
+                self.root[srcr] = destr
             else:
                 self.root[destr] = srcr
-                self.root = map(lambda i: self.root[i] = destr, srcrpar)
-                self.rank[destr] += len(srcrpar)
+                self.rank[srcr] += 1
+
+        return redun
 
     def find(self, x):
         if self.root[x] != x:
-            self.root[x] = find(self.root[x])
-        return x 
+            self.root[x] = self.find(self.root[x])
+        return self.root[x]
+
+if __name__ == '__main__':
+    edges = [[1,2], [2,3], [3,4], [1,4], [1,5]]
+    print(Solution().findRedundantConnection(edges))
