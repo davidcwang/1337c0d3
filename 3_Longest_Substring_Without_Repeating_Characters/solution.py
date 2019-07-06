@@ -2,44 +2,24 @@
 Problem: 3. Longest Substring Without Repeating Characters
 Url: https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
 Author: David Wang
-Date: 12/27/2017
-
-Given a string, find the length of the longest substring 
-without repeating characters.
-
-Examples:
-
-    Given "abcabcbb", the answer is "abc", which the length is 3.
-
-    Given "bbbbb", the answer is "b", with the length of 1.
-
-    Given "pwwkew", the answer is "wke", with the length of 3.
-    Note that the answer must be a substring, "pwke" is a subsequence
-    and not a substring.
+Date: 07/05/2017
 """
 
-class Solution(object):
-        def lengthOfLongestSubstring(self, s):
-            """
-            Returns the length of the longest substring in the given string.
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        repeat_dict = {}
+        start = 0
+        end = 0
+        max_len = 0
 
-            Args:
-                s: A given string
-            Returns:
-                An int representing the length of the longest substring.
-            """
-            longest = 0
-            i = 0
-            j = 0
-            n = len(s)
-            seen = {}
-            while i < n and j < n:
-                c = s[j]
-                if c in seen:
-                    i = seen[c] + 1
-                seen[c] = j
-                j += 1
-                longest = max(longest, j-i)
+        for i, c in enumerate(s):
 
-            return longest
+            if c in repeat_dict:
+                start = max(start, repeat_dict[c] + 1)
 
+            repeat_dict[c] = i
+            end = i
+            length = (end - start + 1)
+            max_len = max(length, max_len)
+
+        return max_len
