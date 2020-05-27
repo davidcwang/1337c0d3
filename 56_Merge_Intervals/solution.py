@@ -1,85 +1,40 @@
 """
-Problem: 759. Employee Free Time
-Url: https://leetcode.com/problems/employee-free-time/
+Problem: 56. Merge Intervals
+Url: https://leetcode.com/problems/merge-intervals/
 Author: David Wang
-Date: 05/25/2020
+Date: 05/26/2020
 """
 
-# Definition for an Interval.
-class Interval:
-    def __init__(self, start: int = None, end: int = None):
-        self.start = start
-        self.end = end
+
+from typing import List
+
 
 class Solution:
-    def employeeFreeTime(self, schedule: [[Interval]]) -> [Interval]:
-        free_times = []
-        sorted_schedule = self._sort_schedule(schedule)
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        merged_intervals = []
+        sorted_intervals = sorted(intervals)
 
-        start = -float('inf')
-        end = -float('inf')
+        for interval in sorted_intervals:
 
-        for interval in sorted_schedule:
-            s = interval.start
-            e = interval.end
+            if len(merged_intervals) == 0:
+                merged_intervals.append(interval)
 
-            if s > end:
-                free_times.append(Interval(end, s))
+            start, end = interval
+            prev_start, prev_end = merged_intervals[-1]
 
-            start = max(start, s)
-            end = max(end, e)
+            # No overlap so append new interval.
+            if start > prev_end:
+                merged_intervals.append([start, end])
 
+            # There is overlap in the intervals so merge them.
+            else:
+                max_end = max(prev_end, end)
+                merged_intervals.pop()
+                merged_intervals.append([prev_start, max_end])
 
-        return self._remove_unbounded_intervals(free_times)
-
-    def _sort_schedule(self, schedule):
-        sorted_schedule = []
-
-        while len(schedule):
-            s = schedule.pop(0)
-            for interval in s:
-                sorted_schedule.append(interval)
-
-        return sorted(sorted_schedule, key=lambda i: i.start)
-
-    def _remove_unbounded_intervals(self, intervals):
-        if len(intervals) == 0:
-            return intervals
-
-        elif intervals[0].start == -float('inf'):
-            intervals.pop(0)
-
-        return intervals
-
-    def create_schedule(self, input):
-        schedule = []
-        while len(input) > 0:
-            employee_schedule = []
-            interval = input.pop(0)
-
-            for i in interval:
-                employee_schedule.append(Interval(i[0], i[1]))
-
-            schedule.append(employee_schedule)
-
-        return schedule
-
-    def interval_to_list(self, intervals):
-        interval_list = []
-        while len(intervals) > 0:
-            inter = intervals.pop(0)
-            interval_list.append([inter.start, inter.end])
-
-        return interval_list
+        return merged_intervals
 
 
 if __name__ == '__main__':
-    input = [[[1,2],[5,6]],[[1,3]],[[4,10]]]
-    schedule = Solution().create_schedule(input)
-    intervals = Solution().employeeFreeTime(schedule)
-    print(Solution().interval_to_list(intervals))
-
-    input =  [[[1,3],[6,7]],[[2,4]],[[2,5],[9,12]]]
-    schedule = Solution().create_schedule(input)
-    intervals = Solution().employeeFreeTime(schedule)
-    print(Solution().interval_to_list(intervals))
+    input = [[1,3],[2,6],[8,10],[15,18]]
+    print(Solution().merge(input))
